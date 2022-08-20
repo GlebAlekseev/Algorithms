@@ -24,16 +24,16 @@ fun selectionSort(array: Array<Int>){
     while (j>=0){                                   // c3 n+1
         var minValue = Int.MAX_VALUE                // c4 n
         var minIndex = 0                            // c5 n
-        for (m in i..array.size-1){           // c6 ∑n-1|j=0 (-j)
-            if (minValue > array[m]){               // c7 ∑n-1|j=0 (-j - 1)
-                minValue = array[m]                 // c8 ∑n-1|j=0 (-j - 1)
-                minIndex = m                        // c9 ∑n-1|j=0 (-j - 1)
+        for (m in i..array.size-1){           // c6 ∑n-1|j=0 (j)
+            if (minValue > array[m]){               // c7 ∑n-1|j=0 (j - 1)
+                minValue = array[m]                 // c8 ∑n-1|j=0 (j - 1)
+                minIndex = m                        // c9 ∑n-1|j=0 (j - 1)
             }
         }
         minIndex--                                  // c10 n
-        while (minIndex >= i){                      // c11 ∑n-1|j=0 (-j)
-            array[minIndex+1] = array[minIndex]     // c12 ∑n-1|j=0 (-j - 1)
-            minIndex--                              // c13 ∑n-1|j=0 (-j - 1)
+        while (minIndex >= i){                      // c11 ∑n-1|j=0 (j)
+            array[minIndex+1] = array[minIndex]     // c12 ∑n-1|j=0 (j - 1)
+            minIndex--                              // c13 ∑n-1|j=0 (j - 1)
         }
         array[i] = minValue                         // c14 n
         i++                                         // c15 n
@@ -46,17 +46,17 @@ fun selectionSort(array: Array<Int>){
 // кол-во элементов*(первый + последний)/2 =  ∑n|j=1 = n*(1 + n)/2
 
 
-// ∑n-1|j=0 (-j)       =    n*(0+1-n)/2     = n(1-n)/2
-// ∑n-1|j=0 (-j - 1)   =    n*(-1-n)/2      = n(-1-n)/2
+// ∑n-1|j=0 (j)       =    n*(0+n-1)/2     = n(n-1)/2
+// ∑n-1|j=0 (j - 1)   =    n*(-1+n-2)/2    = n(n-3)/2
 
 // Суммарное число операций
 // T(n) = c1 + c2 + c3(n+1) + c4n + c5n + c10n + c14n + c15n + c16n +
-//          c6 ∑n-1|j=0 (-j) + c7 ∑n-1|j=0 (-j - 1) + c8 ∑n-1|j=0 (-j - 1) + c9 ∑n-1|j=0 (-j - 1) +
-//          c11 ∑n-1|j=0 (-j) + c12 ∑n-1|j=0 (-j - 1) + c13 ∑n-1|j=0 (-j - 1)
+//          c6 ∑n-1|j=0 (j) + c7 ∑n-1|j=0 (j - 1) + c8 ∑n-1|j=0 (j - 1) + c9 ∑n-1|j=0 (j - 1) +
+//          c11 ∑n-1|j=0 (j) + c12 ∑n-1|j=0 (j - 1) + c13 ∑n-1|j=0 (j - 1)
 
 
 // Нижняя граница
-// В лучшем случае c8 c9 не будут выполняться, квадратичность останется, тк c6+c7 = -n^2/2
+// В лучшем случае c8 c9 не будут выполняться, квадратичность останется, тк c6+c7 = n^2
 // Также c12 с13 отбросятся, и c11 ∑n-1|j=0 (1) константа Tj
 // Квадратично
 

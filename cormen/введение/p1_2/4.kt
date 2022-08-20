@@ -4,5 +4,4 @@ package cormen.введение.p1_2
 
 fun main(){
     TODO()
-
 }
