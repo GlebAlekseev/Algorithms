@@ -17,7 +17,7 @@ package cormen.введение.p1_3
 // Перенести результат из временного массива в исходный
 // Временный массив нужен, для правильной работы итерирования выше
 
-fun merge(array: Array<Int>, minIndex: Int, mid: Int, maxIndex: Int){
+private fun merge(array: Array<Int>, minIndex: Int, mid: Int, maxIndex: Int){
     var firstIndex = minIndex
     var secondIndex = mid
     var index = 0
