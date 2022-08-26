@@ -75,16 +75,47 @@ class Heap(val array: Array<Int>){
     // Моделирование очереди с приоритетом на основе кучи
     // Взятие наибольшего
     // O(log(n))
-    fun extractMax(){
-
+    fun extractMax(): Int{
+        if (heapsize < 1) throw RuntimeException("no elements")
+        val max = array[0]
+        array[0] = array[heapsize-1]
+        heapsize--
+        heapify(0)
+        return max
     }
 
     // Моделирование очереди с приоритетом на основе кучи
     // Добавление элемента
     // O(log(n))
-    fun insert(){
-
+    fun insert(key: Int){
+        if (heapsize==array.size) throw RuntimeException("array is full")
+        heapsize++
+        array[heapsize-1] = Int.MIN_VALUE
+        increaseKey(heapsize-1,key)
     }
+
+    // Моделирование очереди с приоритетом на основе кучи
+    // Получение наибольшего
+    // O(1)
+    fun maximum(): Int{
+        return array[0]
+    }
+
+    // Проверяем ключ на увеличение*
+    // После установки значения убрать побочный эффект, а именно
+    // Если родитель меньше нового увеличенного числа, то поднимаем его вплоть до родителя
+    // Своего рода Heapify, только вверх
+    // O(log(n))
+    fun increaseKey(i: Int, key: Int){
+        if (key < array[i]) throw RuntimeException("new key is smaller than the current one")
+        array[i] = key
+        var j = i
+        while (j > 0 && array[parent(j)] < array[j]){
+            array[j] = array[parent(j)].also { array[parent(j)] = array[j] }
+            j = parent(j)
+        }
+    }
+
 
 
     companion object{
