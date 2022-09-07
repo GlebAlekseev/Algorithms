@@ -4,7 +4,30 @@ import cormen.c10_базовые_структуры.theory.DLinkedList.Companion
 import java.util.function.Consumer
 
 fun main(){
+    val list = DLinkedList<Int>()
+    list.pushBack(1)
+    list.pushBack(2)
+    list.pushBack(3)
+    list.pushBack(4)
+    list.pushBack(5)
+    list.pushFront(-1)
+    list.pushFront(-2)
+    list.pushFront(-3)
+    list.forEach{
+        println("it=$it")
+    }
 
+    list.removeFirst()
+    list.removeFirst()
+
+    list.removeLast()
+    list.removeOfIndex(2)
+    list.removeOfIndex(2)
+
+    println()
+    list.forEach{
+        println("it=$it")
+    }
 }
 
 
@@ -138,24 +161,24 @@ class DLinkedList<T>: Iterable<T>{
     companion object{
         data class Node<T>(var key: T,var prev: Node<T>? = null, var next: Node<T>? = null): Iterable<Node<T>>{
             override fun iterator(): Iterator<Node<T>> = object : Iterator<Node<T>>{
-                var lastNode = this@Node
+                var lastNode: Node<T>? = this@Node
                 override fun hasNext(): Boolean {
-                    return lastNode.next != null
+                    return lastNode != null
                 }
 
                 override fun next(): Node<T> {
                     val tmpNode = lastNode
-                    lastNode = lastNode.next!!
-                    return tmpNode
+                    lastNode = lastNode?.next
+                    return tmpNode!!
                 }
             }
         }
     }
 
     override fun iterator(): Iterator<T> = object : Iterator<T>{
-        var lastNode = head
+        private var lastNode = head
         override fun hasNext(): Boolean {
-            return lastNode != null && lastNode?.next == null
+            return lastNode != null
         }
 
         override fun next(): T {
