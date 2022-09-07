@@ -4,13 +4,13 @@ import cormen.c10_базовые_структуры.theory.DLinkedList
 
 fun main(){
 
-    val chainHashTable = ChainHashTable(4)
-    val key1 = 2134
-    val key2 = 3431
-    val key3 = 7556
-    val key4 = 9577
-    val key5 = 6527
-    val key6 = 1521
+    val chainHashTable = ChainHashTable<String,Int>(4)
+    val key1 = "2134"
+    val key2 = "3431"
+    val key3 = "7556"
+    val key4 = "9577"
+    val key5 = "6527"
+    val key6 = "1521"
     chainHashTable.insert(key1,1)
     chainHashTable.insert(key2,2)
     chainHashTable.insert(key3,3)
@@ -18,12 +18,12 @@ fun main(){
     chainHashTable.insert(key5,5)
     chainHashTable.insert(key6,6)
 
-    println("search $key1 = ${chainHashTable.search(key1)}")
-    println("search $key2 = ${chainHashTable.search(key2)}")
-    println("search $key3 = ${chainHashTable.search(key3)}")
-    println("search $key4 = ${chainHashTable.search(key4)}")
-    println("search $key5 = ${chainHashTable.search(key5)}")
-    println("search $key6 = ${chainHashTable.search(key6)}")
+    println("search $key1 = ${chainHashTable.get(key1)}")
+    println("search $key2 = ${chainHashTable.get(key2)}")
+    println("search $key3 = ${chainHashTable.get(key3)}")
+    println("search $key4 = ${chainHashTable.get(key4)}")
+    println("search $key5 = ${chainHashTable.get(key5)}")
+    println("search $key6 = ${chainHashTable.get(key6)}")
 
     println("size=${chainHashTable.size} capacity=${chainHashTable.capacity}")
 
@@ -36,6 +36,7 @@ fun main(){
 
     try {
         chainHashTable.delete(key1)
+        chainHashTable.delete(key1)
     }catch (e: RuntimeException){
         println("Ошибка: $e")
     }
@@ -46,9 +47,9 @@ fun main(){
 // Хеш-таблица, использующая метод цепочек
 // TODO для хранения внутри цепочек при достижении значительного числа элементов (~32) заменять их на BST (Binary Search Tree)
 
-class ChainHashTable(val capacity: Int){
+class ChainHashTable<KEY, VALUE>(val capacity: Int): AssociativeArray<KEY, VALUE>{
     private val m = capacity
-    private val array = Array<DLinkedList<Pair<Int,Int>>?>(capacity){null}
+    private val array = Array<DLinkedList<Pair<KEY, VALUE>>?>(capacity){ null }
     private var _size = 0
     val size
         get() = _size
@@ -56,12 +57,12 @@ class ChainHashTable(val capacity: Int){
     // Для допустимого ключа на выходе должна давать натуральное число в заданном диапазоне
     // [-] Желательно, чтобы ключ с равной вероятностью хэшировался в случайную ячейку
     // O(1)
-    private fun getHash(value: Int): Int{
-        return value % m
+    private fun getHash(value: KEY): Int{
+        return value.hashCode() % m
     }
 
     // O(1)
-    fun insert(key: Int, value: Int){
+    override fun insert(key: KEY, value: VALUE){
         val hashedKey = getHash(key)
         if (array[hashedKey] == null){
             array[hashedKey] = DLinkedList()
@@ -71,7 +72,7 @@ class ChainHashTable(val capacity: Int){
     }
 
     // O(1) - O(n)
-    fun delete(key: Int){
+    override fun delete(key: KEY){
         if (_size == 0) throw RuntimeException("Таблица пустая")
         val hashedKey = getHash(key)
         if (array[hashedKey] == null) throw RuntimeException("Элемент не найден")
@@ -83,7 +84,7 @@ class ChainHashTable(val capacity: Int){
     }
 
     // O(1) - O(n)
-    fun search(key: Int): Int?{
+    override fun get(key: KEY): VALUE?{
         if (_size == 0) return null
         val hashedKey = getHash(key)
         if (array[hashedKey] == null) return null
