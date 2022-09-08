@@ -107,6 +107,9 @@ class OpenAddressingHashTable<KEY, VALUE>(_capacity: Int,var probingType: Probin
 
     // Линейный пробинг
     private fun linearProbing(startIndex: Int, target: KEY?): Int{
+        var firstNullIndex = -1
+        var lastNotNullIndex = -1
+
         // Обойти array с индекса полный круг пока не найду null пустое
         // Если пустого нет то исключение
         var i = startIndex
@@ -114,19 +117,46 @@ class OpenAddressingHashTable<KEY, VALUE>(_capacity: Int,var probingType: Probin
             var prev = startIndex - 1
             if (prev == -1) prev = capacity-1
             if (i == capacity) i = 0
-            if(array[i]?.first == target) return i
+            if (firstNullIndex == -1 && array[i]?.first == null) firstNullIndex = i
+            if(array[i]?.first == target) {
+                if (target!=null && firstNullIndex != -1){
+                    if (lastNotNullIndex != -1){
+                        array[lastNotNullIndex] = array[firstNullIndex].also { array[firstNullIndex] = array[lastNotNullIndex] }
+                    }else{
+                        array[i] = array[firstNullIndex].also { array[firstNullIndex] = array[i] }
+                        return firstNullIndex
+                    }
+                }
+                return i
+            }
             if (i == prev) break
+            lastNotNullIndex = i
             i++
         }
         return -1
     }
     // Квадратичный пробинг
     private fun quadraticProbing(startIndex: Int, target: KEY?): Int{
+        var firstNullIndex = -1
+        var lastNotNullIndex = -1
+
         var i = startIndex
         var k = 1
         while (k<=capacity){
             if(i >= capacity) i %= m
-            if(array[i]?.first == target) return i
+            if (firstNullIndex == -1 && array[i]?.first == null) firstNullIndex = i
+            if(array[i]?.first == target){
+                if (target!=null && firstNullIndex != -1){
+                    if (lastNotNullIndex != -1){
+                        array[lastNotNullIndex] = array[firstNullIndex].also { array[firstNullIndex] = array[lastNotNullIndex] }
+                    }else{
+                        array[i] = array[firstNullIndex].also { array[firstNullIndex] = array[i] }
+                        return firstNullIndex
+                    }
+                }
+                return i
+            }
+            lastNotNullIndex = i
             i += (k+k*k)/2
             k++
         }
