@@ -27,6 +27,7 @@ fun main(){
 
     println("size=${chainHashTable.size} capacity=${chainHashTable.capacity}")
 
+
     chainHashTable.delete(key1)
     chainHashTable.delete(key2)
     chainHashTable.delete(key3)
@@ -46,10 +47,11 @@ fun main(){
 
 // Хеш-таблица, использующая метод цепочек
 // TODO для хранения внутри цепочек при достижении значительного числа элементов (~32) заменять их на BST (Binary Search Tree)
-
-class ChainHashTable<KEY, VALUE>(val capacity: Int): AssociativeArray<KEY, VALUE>{
-    private val m = capacity
-    private val array = Array<DLinkedList<Pair<KEY, VALUE>>?>(capacity){ null }
+class ChainHashTable<KEY, VALUE>(private var _capacity: Int): AssociativeArray<KEY, VALUE>{
+    val capacity
+        get() = _capacity
+    private var m = capacity
+    private var array = Array<DLinkedList<Pair<KEY, VALUE>>?>(capacity){ null }
     private var _size = 0
     val size
         get() = _size
@@ -61,6 +63,30 @@ class ChainHashTable<KEY, VALUE>(val capacity: Int): AssociativeArray<KEY, VALUE
         return value.hashCode() % m
     }
 
+    private fun checkOverflow(){
+        if (size >= capacity*4/3){
+            resize(2*capacity)
+        }
+    }
+
+    fun resize(newCapacity: Int){
+        _capacity = newCapacity
+        m = capacity
+        val newArray =  Array<DLinkedList<Pair<KEY, VALUE>>?>(capacity){ null }
+        _size = 0
+        array.forEach {
+            it?.forEach{
+                val hashedKey = getHash(it.first)
+                if (newArray[hashedKey] == null){
+                    newArray[hashedKey] = DLinkedList()
+                }
+                newArray[hashedKey]!!.pushBack(it)
+                _size++
+            }
+        }
+        array = newArray
+    }
+
     // O(1)
     override fun insert(key: KEY, value: VALUE){
         val hashedKey = getHash(key)
@@ -69,6 +95,7 @@ class ChainHashTable<KEY, VALUE>(val capacity: Int): AssociativeArray<KEY, VALUE
         }
         array[hashedKey]!!.pushBack(Pair(key,value))
         _size++
+        checkOverflow()
     }
 
     // O(1) - O(n)
