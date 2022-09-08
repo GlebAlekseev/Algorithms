@@ -141,8 +141,8 @@ class DLinkedList<T>: Iterable<T>{
             val prevNode = node?.prev
             nextNode?.prev = prevNode
             prevNode?.next = nextNode
+            _size--
         }
-        _size--
     }
 
     fun removeOfIndex(index: Int){
@@ -154,8 +154,8 @@ class DLinkedList<T>: Iterable<T>{
             val prevNode = node?.prev
             nextNode?.prev = prevNode
             prevNode?.next = nextNode
+            _size--
         }
-        _size--
     }
 
     companion object{
