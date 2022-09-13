@@ -2,7 +2,7 @@ package cormen.c10_базовые_структуры.theory
 
 fun main(){
 
-    val stack = Stack(5)
+    val stack = Stack<Int>()
     stack.push(1)
     stack.push(2)
     stack.push(3)
@@ -15,17 +15,25 @@ fun main(){
     println(stack)
 }
 
-class Stack(val size: Int){
-    private val array = Array(size){0}
+class Stack<T>{
+    private var size = 8
+    private var array = Array<Any?>(size){null} as Array<T?>
     private var top = -1 // Последний элемент
 
-    fun push(element: Int){
-        if (isFull()) throw RuntimeException("Overflow")
+    fun push(element: T){
+        if (isFull()) {
+            size *= 2
+            val newArray = Array<Any?>(size){null} as Array<T?>
+            array.forEachIndexed { index, item ->
+                newArray[index] = item
+            }
+            array = newArray
+        }
         array[++top] = element
     }
-    fun pop(): Int{
+    fun pop(): T {
         if (isEmpty()) throw RuntimeException("Underflow")
-        return array[top--]
+        return array[top--]!!
     }
     fun isEmpty(): Boolean {
         return top == -1
