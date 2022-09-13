@@ -1,8 +1,5 @@
 package cormen.c11_хеширование.theory
 
-import kotlin.math.pow
-import kotlin.math.sign
-import kotlin.math.sqrt
 
 fun main(){
     val openAddressingHashTable = OpenAddressingHashTable<String,Int>(6).apply {
@@ -47,21 +44,23 @@ fun main(){
 // Хеш-таблица с открытой адресацией
 
 
-class OpenAddressingHashTable<KEY, VALUE>(_capacity: Int,var probingType: Probing = Probing.LINEAR): AssociativeArray<KEY, VALUE>{
-    val capacity = when (probingType) {
-        Probing.LINEAR -> _capacity
-        Probing.QUADRATIC -> getSquareCapacity(_capacity)
-    }
-    private fun getSquareCapacity(value: Int): Int{
-        val result = sqrt(value.toDouble())
-        val result2 = result - result.toInt()
-        if (result2 == 0.0){
-            return value
-        }
-        return (result.toInt() + 1).toDouble().pow(2.0).toInt()
-    }
-    private val m = capacity
-    private val array = Array<Pair<KEY, VALUE>?>(capacity){ null }
+class OpenAddressingHashTable<KEY, VALUE>(private var _capacity: Int,var probingType: Probing = Probing.LINEAR): AssociativeArray<KEY, VALUE>{
+    val capacity
+        get() = _capacity
+//    val capacity = when (probingType) {
+//        Probing.LINEAR -> _capacity
+//        Probing.QUADRATIC -> getSquareCapacity(_capacity)
+//    }
+//    private fun getSquareCapacity(value: Int): Int{
+//        val result = sqrt(value.toDouble())
+//        val result2 = result - result.toInt()
+//        if (result2 == 0.0){
+//            return value
+//        }
+//        return (result.toInt() + 1).toDouble().pow(2.0).toInt()
+//    }
+    private var m = capacity
+    private var array = Array<Pair<KEY, VALUE>?>(capacity){ null }
     private var _size = 0
     val size
         get() = _size
@@ -69,6 +68,27 @@ class OpenAddressingHashTable<KEY, VALUE>(_capacity: Int,var probingType: Probin
     private fun getHash(value: KEY): Int{
         return value.hashCode() % m
     }
+
+    private fun checkOverflow(){
+        if (size >= capacity/2){
+            resize(2*capacity)
+        }
+    }
+
+    fun resize(newCapacity: Int){
+//        println("resize newCapacirt: $newCapacity")
+        _capacity = newCapacity
+        m = capacity
+        val tmpArray = array.toList()
+        array =  Array<Pair<KEY, VALUE>?>(capacity){ null }
+        _size = 0
+        tmpArray.forEach {
+            if (it != null){
+                insert(it.first, it.second)
+            }
+        }
+    }
+
     // O(1) - O(n)
     override fun insert(key: KEY, value: VALUE) {
         if (size == capacity) throw RuntimeException("Таблица заполнена")
@@ -80,6 +100,7 @@ class OpenAddressingHashTable<KEY, VALUE>(_capacity: Int,var probingType: Probin
         if (index == -1) throw RuntimeException("В таблице нет свободных мест")
         array[index] = Pair(key, value)
         _size++
+        checkOverflow()
     }
     // O(1) - O(n)
     override fun delete(key: KEY) {
