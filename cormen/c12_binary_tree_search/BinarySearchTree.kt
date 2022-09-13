@@ -17,7 +17,7 @@ class BinaryTreeSearch <T: Comparable<T>>: Iterable<Node<T>>{
     var traversalType = TraversalType.INORDER
 
 
-    fun find(key: T,node: Node<T>? = root): Node<T>?{
+    fun find(key: T, node: Node<T>? = root): Node<T>?{
         if (node == null || key == node.key) return node
         return if (key > node.key){
             find(key, node.right)
@@ -26,31 +26,82 @@ class BinaryTreeSearch <T: Comparable<T>>: Iterable<Node<T>>{
         }
     }
 
-    fun insert(key: T,node: Node<T>? = root) {
-        if (node == null) root = Node(key = key)
+    fun findParent(key: T, node: Node<T>? = root, parent: Node<T>? = null): Pair<Node<T>?,Node<T>?>{
+        if (node == null) throw RuntimeException("Родитель не существует")
+        if (key == node.key) return Pair(parent, node) // Вернет parent null, если node это root
+        return if (key > node.key){
+            findParent(key, node.right, node)
+        }else{
+            findParent(key, node.left, node)
+        }
+    }
+
+    fun insert(key: T){
+        _insert(Node(key = key))
+    }
+    fun insert(node: Node<T>, root: Node<T>?){
+        _insert(node,root)
+    }
+
+    private fun _insert(target: Node<T>,node: Node<T>? = root) {
+        if (node == null) root = target
         else{
-            if (key == node.key){
+            if (target.key == node.key){
                 throw RuntimeException("Элемент с таким значением уже существует")
-            }else if(key > node.key){
+            }else if(target.key > node.key){
                 if (node.right == null) {
-                    node.right = Node(key = key)
+                    node.right = target
                 }else{
-                    insert(key, node.right)
+                    _insert(target, node.right)
                 }
             }else {
                 if (node.left == null) {
-                    node.left = Node(key = key)
+                    node.left = target
                 }else{
-                    insert(key, node.left)
+                    _insert(target, node.left)
                 }
             }
         }
     }
 
-    fun remove(node: Node<T>? = root, key: T){
-        TODO()
+
+    fun remove(key: T){
+        val (parent, child) = findParent(key)
+        if(child!!.left != null && child.right != null){ // 2ch
+            replaceRight(parent, child)
+            replaceLeft(parent, child)
+        }else if(child.left != null){ // 1ch
+            replaceLeft(parent, child)
+        }else if(child.right != null){ // 1ch
+            replaceRight(parent, child)
+        }else{ // 0ch
+            replaceRight(parent, child)
+        }
     }
 
+    private fun replaceLeft(parent: Node<T>?, child: Node<T>){
+        if (parent == null && root == child) root = child.left
+        else{
+            val currentParent = parent ?: root
+            if (currentParent?.left == child) currentParent.left = null
+            if (currentParent?.right == child) currentParent.right = null
+            if (child.left != null){
+                insert(child.left!!,currentParent)
+            }
+        }
+    }
+
+    private fun replaceRight(parent: Node<T>?, child: Node<T>){
+        if (parent == null && root == child) root = child.right
+        else{
+            val currentParent = parent ?: root
+            if (currentParent?.left == child) currentParent.left = null
+            if (currentParent?.right == child) currentParent.right = null
+            if (child.right != null){
+                insert(child.right!!,currentParent)
+            }
+        }
+    }
 
     fun minimum(): Node<T>?{
         var lastNode: Node<T>? = null
@@ -67,8 +118,6 @@ class BinaryTreeSearch <T: Comparable<T>>: Iterable<Node<T>>{
         }
         return lastNode
     }
-
-
 
     override fun iterator(): Iterator<Node<T>> = object : Iterator<Node<T>>{
         private val stack = Stack<Node<T>>()
