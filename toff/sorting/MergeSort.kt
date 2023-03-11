@@ -6,8 +6,7 @@ fun main() {
     val result = mergeSort(list)
     println(result)
 }
-// Можно использовать индексы и один массив, тогда память O(n)
-// В этом случае память O(nlogn), т.к. без оптимизации. (slice создает новый массив)
+
 fun mergeSort(list: List<Int>): List<Int> {
     return if (list.size > 1) {
         val middle = list.size / 2
