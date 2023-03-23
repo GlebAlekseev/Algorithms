@@ -7,6 +7,8 @@ fun main() {
     result.forEachIndexed { index, l -> if (index == result.size - 1) println("$l") else print("$l ") }
 }
 
+// Задача B. Anti-qsort test
+
 fun antiQuickSort(n: Int): List<Int> {
     val result = (1..n).toMutableList()
     var i = 3
@@ -23,7 +25,7 @@ fun antiQuickSort(n: Int): List<Int> {
 //fun quickSort(list: MutableList<Int>) {
 //    quickSort(list, 0, list.size - 1)
 //}
-
+//
 //fun quickSort(list: MutableList<Int>, left: Int, right: Int) {
 //    println("l=$left r=$right list=${list}")
 //    if (right <= left) return
