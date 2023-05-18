@@ -23,5 +23,3 @@ fun List<Long>.getNearestNeighbor(target: Long): Long {
     }
     return if (isLeftShort(target, this[l], this[r])) this[l] else this[r]
 }
-
-// Задача B: Рядом

@@ -12,8 +12,6 @@ fun main() {
     println(result)
 }
 
-// Задача D. Квадратный корень и квадратный квадрат
-
 fun expressionBinarySearch(target: Double, expression: (value: Double) -> Double): Double {
     if (expression(0.0) == 0.0) return 0.0
     val boundPair = getBound(eps) { nextValue -> expression(nextValue) > target }

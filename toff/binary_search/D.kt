@@ -12,8 +12,6 @@ fun main() {
     println(result)
 }
 
-// Задача D. Квадратный корень и квадратный квадрат
-
 fun expressionBinarySearch(target: Double, expression: (value: Double) -> Double): Double {
     // [-0.999999;-0.000001] U [0.000001;inf)
     fun isNegative(): Boolean = target in 1.0..expression.invoke(-0.9273199999999667)

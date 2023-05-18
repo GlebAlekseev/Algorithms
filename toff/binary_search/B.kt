@@ -28,5 +28,3 @@ fun List<Long>.myLowerBound(target: Long): Int? {
     }
     return l
 }
-
-// Задача B: Рядом

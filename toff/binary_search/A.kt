@@ -21,5 +21,3 @@ fun List<Int>.myBinarySearch(target: Int): Int? {
     }
     return null
 }
-
-// Задача A: Двоичный поиск

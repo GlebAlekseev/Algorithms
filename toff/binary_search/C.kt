@@ -6,8 +6,6 @@ fun main() {
     printlnWithoutBuffer("! $result")
 }
 
-// Задача C: Отгадай число
-
 fun binaryGuessing(l: Int = 0, r: Int): Int {
     if (l == r) return l + 1
     if (r - l == 1) {
